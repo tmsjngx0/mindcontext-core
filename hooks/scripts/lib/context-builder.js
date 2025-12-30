@@ -51,6 +51,24 @@ function selectKeyDecisions(keyDecisions, currentEpic, count = 3) {
 }
 
 /**
+ * Format detected integrations for display.
+ *
+ * @param {Object} config - Config object from focus.json
+ * @returns {string|null} - Formatted integrations line or null
+ */
+function formatIntegrations(config) {
+  const integrations = config?.integrations;
+  if (!integrations) return null;
+
+  const parts = [];
+  if (integrations.workflow) parts.push(integrations.workflow);
+  if (integrations.tdd) parts.push(integrations.tdd);
+  if (integrations.code_analysis) parts.push(integrations.code_analysis);
+
+  return parts.length > 0 ? parts.join(' + ') : null;
+}
+
+/**
  * Build minimal context (~250 tokens).
  * Focus summary, 2-3 key decisions, next task, hint.
  *
@@ -63,6 +81,12 @@ function buildMinimal(focus) {
 
   lines.push('# MindContext Session');
   lines.push('');
+
+  // Show integrations if detected
+  const integrationsLine = formatIntegrations(focus.config);
+  if (integrationsLine) {
+    lines.push(`**Integrations:** ${integrationsLine}`);
+  }
 
   // One-line focus summary
   const focusType = cf.type || 'none';

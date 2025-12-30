@@ -37,7 +37,52 @@ fi
 mkdir -p .project/context
 ```
 
-### 3. Create focus.json
+### 3. Detect Installed Integrations
+
+Check for installed plugins/tools and store in config:
+
+```javascript
+function detectIntegrations() {
+  const integrations = {
+    workflow: null,      // "mindcontext-skills" | "openspec" | null
+    tdd: null,           // "superpowers" | "built-in" | null
+    code_analysis: null  // "feature-dev" | "serena" | null
+  };
+
+  // Detect workflow plugin
+  if (fs.existsSync('.project/prds') || fs.existsSync('.project/epics')) {
+    integrations.workflow = 'mindcontext-skills';
+  } else if (fs.existsSync('.openspec') || fs.existsSync('specs/')) {
+    integrations.workflow = 'openspec';
+  }
+
+  // Detect TDD tool
+  if (fs.existsSync('.superpowers')) {
+    integrations.tdd = 'superpowers';
+  }
+
+  // Detect code analysis
+  if (fs.existsSync('.serena')) {
+    integrations.code_analysis = 'serena';
+  }
+
+  return integrations;
+}
+```
+
+**Detection markers:**
+
+| Plugin | Detection |
+|--------|-----------|
+| mindcontext-skills | `.project/prds/` or `.project/epics/` exists |
+| openspec | `.openspec/` or `specs/` exists |
+| superpowers | `.superpowers/` config exists |
+| feature-dev | Check plugin registry (manual) |
+| serena | `.serena/` config exists |
+
+### 4. Create focus.json
+
+Include detected integrations in config:
 
 ```json
 {
@@ -57,12 +102,27 @@ mkdir -p .project/context
   "context_level": "minimal",
   "active_sessions": {},
   "config": {
-    "workflow_enforcement": "remind"
+    "workflow_enforcement": "remind",
+    "integrations": {
+      "workflow": null,
+      "tdd": null,
+      "code_analysis": null
+    }
   }
 }
 ```
 
-### 4. Create CLAUDE.md
+**After detection, update integrations:**
+
+```json
+"integrations": {
+  "workflow": "mindcontext-skills",
+  "tdd": "superpowers",
+  "code_analysis": "feature-dev"
+}
+```
+
+### 5. Create CLAUDE.md
 
 ```markdown
 # CLAUDE.md
@@ -93,7 +153,7 @@ This file provides guidance to Claude Code when working in this repository.
 - `/commit` - Smart commit with conventional format
 ```
 
-### 5. Create progress.md
+### 6. Create progress.md
 
 ```markdown
 # Progress
@@ -105,7 +165,7 @@ Session progress and notes.
 [Auto-updated by context hooks]
 ```
 
-### 6. Output
+### 7. Output
 
 ```
 PROJECT INITIALIZED
@@ -116,9 +176,27 @@ Created:
   ✓ .project/context/progress.md
   ✓ CLAUDE.md
 
+Detected Integrations:
+  Workflow: [mindcontext-skills | openspec | none]
+  TDD: [superpowers | built-in | none]
+  Code Analysis: [feature-dev | serena | none]
+
 Next steps:
   • Set focus: /focus on [task name]
   • Start working: /sod
+```
+
+### 8. Suggest Missing Integrations
+
+If no workflow detected:
+```
+No workflow plugin detected.
+
+Options:
+  • mindcontext-skills - PRD → Epic → Task methodology
+  • openspec - Spec-driven development
+
+Install: /plugin install [name]@[marketplace]
 ```
 
 ## Notes
