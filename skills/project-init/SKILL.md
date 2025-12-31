@@ -7,6 +7,26 @@ description: Initialize project with context management structure. Creates .proj
 
 Initialize any project with context management and workflow selection.
 
+## CRITICAL: Exact Plugin Installation Commands
+
+**DO NOT make up or hallucinate installation commands. Use ONLY these exact commands:**
+
+### mindcontext-skills installation:
+```
+/plugin marketplace add tmsjngx0/mindcontext-skills
+/plugin install mindcontext-skills@tmsjngx0
+```
+
+### openspec installation:
+```
+/plugin marketplace add Fission-AI/openspec
+/plugin install openspec@Fission-AI
+```
+
+**These are Claude Code PLUGIN commands, NOT MCP commands. Never use `claude mcp add` for these.**
+
+---
+
 ## When to Use
 
 - Starting a new project
