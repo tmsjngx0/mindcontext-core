@@ -1,20 +1,20 @@
 ---
-description: Initialize MindContext project structure with brainstorming-driven design
+description: Initialize project with basic context management structure
 ---
 
 # Project Init
 
-Initialize any project with MindContext methodology through conversational discovery.
+Initialize any project with MindContext context management.
 
 This command will:
-1. Create `.project/` directory structure
-2. Generate `CLAUDE.md` with project guidelines
-3. Walk through project discovery questions
-4. Create `.project/design.md` with vision and roadmap
-5. Suggest first PRD to create
+1. Create `.project/context/` directory
+2. Create `focus.json` for session state
+3. Create `progress.md` for session notes
+4. Generate `CLAUDE.md` with project guidelines
+5. Suggest workflow plugins to install (optional)
 
 Works for both:
-- **Greenfield** - New projects (full 7-question discovery)
-- **Brownfield** - Existing codebases (lighter 5-question flow)
+- **Greenfield** - New projects
+- **Brownfield** - Existing codebases
 
 Invoke the project-init skill for guided setup.
