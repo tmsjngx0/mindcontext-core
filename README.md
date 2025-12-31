@@ -182,7 +182,6 @@ Core auto-detects installed plugins on session start:
 |--------|------------------|
 | mindcontext-skills | `.project/prds/` or `.project/epics/` |
 | openspec | `.openspec/` or `specs/` |
-| superpowers | `.superpowers/` |
 | serena | `.serena/` |
 
 Detected integrations are stored in `focus.json` and shown in session context:
@@ -207,24 +206,24 @@ Detected integrations are stored in `focus.json` and shown in session context:
 
 **openspec** — Spec-driven development with change requests
 ```bash
-/plugin marketplace add openspec/openspec
-/plugin install openspec@openspec
+/plugin marketplace add Fission-AI/openspec
+/plugin install openspec@Fission-AI
 ```
 
 ### TDD Enforcement
 
 **superpowers** — Micro-task TDD with Red-Green-Refactor
 ```bash
-/plugin marketplace add anthropics/superpowers
-/plugin install superpowers@anthropics
+/plugin marketplace add obra/superpowers
+/plugin install superpowers@obra
 ```
 
 ### Code Analysis
 
 **feature-dev** — Codebase exploration and architecture
 ```bash
-/plugin marketplace add anthropics/feature-dev
-/plugin install feature-dev@anthropics
+/plugin marketplace add anthropics/claude-code
+/plugin install feature-dev@claude-code-plugins
 ```
 
 ## Recommended Combinations

@@ -56,11 +56,6 @@ function detectIntegrations() {
     integrations.workflow = 'openspec';
   }
 
-  // Detect TDD tool
-  if (fs.existsSync('.superpowers')) {
-    integrations.tdd = 'superpowers';
-  }
-
   // Detect code analysis
   if (fs.existsSync('.serena')) {
     integrations.code_analysis = 'serena';
@@ -76,8 +71,6 @@ function detectIntegrations() {
 |--------|-----------|
 | mindcontext-skills | `.project/prds/` or `.project/epics/` exists |
 | openspec | `.openspec/` or `specs/` exists |
-| superpowers | `.superpowers/` config exists |
-| feature-dev | Check plugin registry (manual) |
 | serena | `.serena/` config exists |
 
 ### 4. Create focus.json
@@ -201,20 +194,20 @@ WORKFLOW (pick one):
     /plugin install mindcontext-skills@tmsjngx0
 
   openspec - Spec-driven development with change requests
-    /plugin marketplace add openspec/openspec
-    /plugin install openspec@openspec
+    /plugin marketplace add Fission-AI/openspec
+    /plugin install openspec@Fission-AI
 
 TDD ENFORCEMENT:
 
   superpowers - Micro-task TDD with Red-Green-Refactor
-    /plugin marketplace add anthropics/superpowers
-    /plugin install superpowers@anthropics
+    /plugin marketplace add obra/superpowers
+    /plugin install superpowers@obra
 
 CODE ANALYSIS:
 
   feature-dev - Codebase exploration and architecture
-    /plugin marketplace add anthropics/feature-dev
-    /plugin install feature-dev@anthropics
+    /plugin marketplace add anthropics/claude-code
+    /plugin install feature-dev@claude-code-plugins
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
@@ -233,16 +226,16 @@ CODE ANALYSIS:
 # Full MindContext
 /plugin marketplace add tmsjngx0/mindcontext-skills
 /plugin install mindcontext-skills@tmsjngx0
-/plugin marketplace add anthropics/feature-dev
-/plugin install feature-dev@anthropics
+/plugin marketplace add anthropics/claude-code
+/plugin install feature-dev@claude-code-plugins
 
 # Integration Mode
-/plugin marketplace add openspec/openspec
-/plugin install openspec@openspec
-/plugin marketplace add anthropics/superpowers
-/plugin install superpowers@anthropics
-/plugin marketplace add anthropics/feature-dev
-/plugin install feature-dev@anthropics
+/plugin marketplace add Fission-AI/openspec
+/plugin install openspec@Fission-AI
+/plugin marketplace add obra/superpowers
+/plugin install superpowers@obra
+/plugin marketplace add anthropics/claude-code
+/plugin install feature-dev@claude-code-plugins
 ```
 
 ## Notes
