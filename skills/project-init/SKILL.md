@@ -1,11 +1,11 @@
 ---
 name: project-init
-description: Initialize project with context management structure. Creates .project/context/, focus.json, and CLAUDE.md. Use when user says "init project", "initialize", "setup project", or "project init".
+description: Initialize project with context management structure. Creates .project/context/, focus.json, and CLAUDE.md. Asks user which workflow to use. Use when user says "init project", "initialize", "setup project", or "project init".
 ---
 
 # Project Init (Core)
 
-Initialize any project with basic context management structure.
+Initialize any project with context management and workflow selection.
 
 ## When to Use
 
@@ -13,15 +13,15 @@ Initialize any project with basic context management structure.
 - Adding context management to existing project
 - User says "init", "initialize project", "setup project"
 
-## What to Do
+## Workflow
 
-### 1. Check Existing Structure
+### Phase 1: Check Existing Structure
 
 ```bash
 # Check if already initialized
 if [ -d ".project/context" ]; then
   echo "Project already initialized"
-  # Show current state
+  # Show current state and offer to reconfigure
 fi
 
 # Check for git
@@ -31,51 +31,82 @@ if ! git rev-parse --git-dir > /dev/null 2>&1; then
 fi
 ```
 
-### 2. Create Directory Structure
+### Phase 2: Create Base Structure
 
 ```bash
 mkdir -p .project/context
 ```
 
-### 3. Detect Installed Integrations
+Create these files:
+- `.project/context/focus.json` - Session state
+- `.project/context/progress.md` - Progress notes
+- `CLAUDE.md` - Project guidelines
 
-Check for installed plugins/tools and store in config:
+### Phase 3: Ask Workflow Preference
 
-```javascript
-function detectIntegrations() {
-  const integrations = {
-    workflow: null,      // "mindcontext-skills" | "openspec" | null
-    tdd: null,           // "superpowers" | "built-in" | null
-    code_analysis: null  // "feature-dev" | "serena" | null
-  };
+**IMPORTANT: Use AskUserQuestion tool to ask the user:**
 
-  // Detect workflow plugin
-  if (fs.existsSync('.project/prds') || fs.existsSync('.project/epics')) {
-    integrations.workflow = 'mindcontext-skills';
-  } else if (fs.existsSync('.openspec') || fs.existsSync('specs/')) {
-    integrations.workflow = 'openspec';
-  }
+```
+Which development workflow would you like to use?
 
-  // Detect code analysis
-  if (fs.existsSync('.serena')) {
-    integrations.code_analysis = 'serena';
-  }
+1. **mindcontext-skills** (Recommended)
+   - PRD → Epic → Task methodology
+   - Spec-Driven Development (SDD) with TDD enforcement
+   - Structured project management
 
-  return integrations;
-}
+2. **openspec**
+   - Spec-driven development
+   - Change request workflow
+   - Lightweight specifications
+
+3. **None (core only)**
+   - Just session persistence
+   - No workflow enforcement
+   - Add workflow later if needed
 ```
 
-**Detection markers:**
+**Use the AskUserQuestion tool with these options:**
+- Header: "Workflow"
+- Question: "Which development workflow would you like to use?"
+- Options:
+  1. mindcontext-skills - PRD → Epic → Task with SDD/TDD (Recommended)
+  2. openspec - Spec-driven development
+  3. None - Core only, add workflow later
 
-| Plugin | Detection |
-|--------|-----------|
-| mindcontext-skills | `.project/prds/` or `.project/epics/` exists |
-| openspec | `.openspec/` or `specs/` exists |
-| serena | `.serena/` config exists |
+### Phase 4: Install Chosen Workflow
 
-### 4. Create focus.json
+Based on user's choice:
 
-Include detected integrations in config:
+**If mindcontext-skills:**
+```
+To install mindcontext-skills, run:
+
+/plugin marketplace add tmsjngx0/mindcontext-skills
+/plugin install mindcontext-skills@tmsjngx0
+
+After installing, run /prd to create your first PRD.
+```
+
+**If openspec:**
+```
+To install openspec, run:
+
+/plugin marketplace add Fission-AI/openspec
+/plugin install openspec@Fission-AI
+
+After installing, follow openspec's initialization.
+```
+
+**If None:**
+```
+Core-only mode. You can add a workflow plugin anytime:
+- /plugin install mindcontext-skills@tmsjngx0
+- /plugin install openspec@Fission-AI
+```
+
+### Phase 5: Update focus.json
+
+Store the workflow preference:
 
 ```json
 {
@@ -91,31 +122,26 @@ Include detected integrations in config:
     "work_done": []
   },
   "next_session_tasks": [],
-  "last_updated": "[timestamp]",
+  "last_updated": "[ISO timestamp]",
   "context_level": "minimal",
   "active_sessions": {},
   "config": {
     "workflow_enforcement": "remind",
     "integrations": {
-      "workflow": null,
+      "workflow": "[user's choice or null]",
       "tdd": null,
       "code_analysis": null
     }
+  },
+  "onboarding": {
+    "shown": true,
+    "workflow_chosen": "[user's choice]",
+    "date": "[ISO date]"
   }
 }
 ```
 
-**After detection, update integrations:**
-
-```json
-"integrations": {
-  "workflow": "mindcontext-skills",
-  "tdd": "superpowers",
-  "code_analysis": "feature-dev"
-}
-```
-
-### 5. Create CLAUDE.md
+### Phase 6: Create CLAUDE.md
 
 ```markdown
 # CLAUDE.md
@@ -126,11 +152,13 @@ This file provides guidance to Claude Code when working in this repository.
 
 [Brief description - ask user or infer from package.json/README]
 
-## Development Guidelines
+## Development Workflow
 
-- Follow existing code patterns
-- Write tests for new functionality
-- Use meaningful commit messages
+[Based on user's workflow choice:]
+
+**mindcontext-skills:** Follow SDD workflow - PRD first, then Epic, then Tasks with TDD.
+**openspec:** Follow spec-driven workflow - specs before implementation.
+**core-only:** No enforced workflow, just session persistence.
 
 ## Context Files
 
@@ -146,19 +174,7 @@ This file provides guidance to Claude Code when working in this repository.
 - `/commit` - Smart commit with conventional format
 ```
 
-### 6. Create progress.md
-
-```markdown
-# Progress
-
-Session progress and notes.
-
-## Current Session
-
-[Auto-updated by context hooks]
-```
-
-### 7. Output
+### Phase 7: Output
 
 ```
 PROJECT INITIALIZED
@@ -169,78 +185,44 @@ Created:
   ✓ .project/context/progress.md
   ✓ CLAUDE.md
 
-Detected Integrations:
-  Workflow: [mindcontext-skills | openspec | none]
-  TDD: [superpowers | built-in | none]
-  Code Analysis: [feature-dev | serena | none]
+Workflow: [user's choice]
 
+[If workflow plugin needs installing, show install commands]
+
+Next steps:
+  [Based on workflow choice]
+```
+
+## Workflow-Specific Next Steps
+
+**mindcontext-skills:**
+```
+Next steps:
+  1. Install: /plugin install mindcontext-skills@tmsjngx0
+  2. Create PRD: /prd
+  3. Start development with SDD workflow
+```
+
+**openspec:**
+```
+Next steps:
+  1. Install: /plugin install openspec@Fission-AI
+  2. Follow openspec initialization
+  3. Create your first spec
+```
+
+**core-only:**
+```
 Next steps:
   • Set focus: /focus on [task name]
   • Start working: /sod
-```
-
-### 8. Suggest Missing Integrations
-
-Show available plugins based on what's missing:
-
-```
-AVAILABLE INTEGRATIONS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-WORKFLOW (pick one):
-
-  mindcontext-skills - PRD → Epic → Task methodology
-    /plugin marketplace add tmsjngx0/mindcontext-skills
-    /plugin install mindcontext-skills@tmsjngx0
-
-  openspec - Spec-driven development with change requests
-    /plugin marketplace add Fission-AI/openspec
-    /plugin install openspec@Fission-AI
-
-TDD ENFORCEMENT:
-
-  superpowers - Micro-task TDD with Red-Green-Refactor
-    /plugin marketplace add obra/superpowers
-    /plugin install superpowers@obra
-
-CODE ANALYSIS:
-
-  feature-dev - Codebase exploration and architecture
-    /plugin marketplace add anthropics/claude-code
-    /plugin install feature-dev@claude-code-plugins
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-```
-
-**Recommended Combinations:**
-
-| Mode | Plugins |
-|------|---------|
-| **Full MindContext** | mindcontext-core + mindcontext-skills + feature-dev |
-| **Integration** | mindcontext-core + openspec + superpowers + feature-dev |
-| **Minimal** | mindcontext-core only (session persistence) |
-
-**Quick Setup Commands:**
-
-```bash
-# Full MindContext
-/plugin marketplace add tmsjngx0/mindcontext-skills
-/plugin install mindcontext-skills@tmsjngx0
-/plugin marketplace add anthropics/claude-code
-/plugin install feature-dev@claude-code-plugins
-
-# Integration Mode
-/plugin marketplace add Fission-AI/openspec
-/plugin install openspec@Fission-AI
-/plugin marketplace add obra/superpowers
-/plugin install superpowers@obra
-/plugin marketplace add anthropics/claude-code
-/plugin install feature-dev@claude-code-plugins
+  • Add workflow plugin later if needed
 ```
 
 ## Notes
 
-- Generic initialization for any project
-- Creates minimal structure for session persistence
-- Workflow plugins (mindcontext-skills, openspec) can extend with additional structure
-- Does NOT create PRD/Epic structure (that's workflow-specific)
+- Always ask user for workflow preference
+- Don't assume or skip the workflow question
+- Store choice in focus.json for future sessions
+- Guide user to install chosen plugin
+- Core only creates base structure, workflow plugin extends it
