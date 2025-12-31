@@ -1,127 +1,188 @@
 # MindContext Core
 
-**Session persistence for Claude Code.** Auto-injects context at session start, preserves state across memory compaction.
+**Session persistence and foundational commands for Claude Code.** Auto-injects context at session start, preserves state across memory compaction, and provides essential session management commands.
 
-> The essential subset of [MindContext Skills](https://github.com/tmsjngx0/mindcontext-skills) — just session management, no workflow enforcement.
+> The foundation layer of [MindContext](https://mindcontext.io) — session management without workflow enforcement.
 
-## What It Does
+## Features
 
-| Hook | When | What |
-|------|------|------|
-| `SessionStart` | Claude session begins | Injects focus, key decisions, next tasks |
-| `Stop` | Claude stops/pauses | Saves timestamp to focus.json |
-| `PreCompact` | Before memory compaction | Preserves critical context |
-| `SessionEnd` | Claude session ends | Cleans up session entry |
-
-**No workflow enforcement.** No TDD blocking. No skill dependencies. Just context persistence.
+- **Session Persistence** — Auto-inject context at session start
+- **Memory Compaction** — Preserve critical context across compaction
+- **Session Commands** — sod, eod, focus, update-context, project-init, commit
+- **Integration Detection** — Auto-detect installed plugins
+- **Works with Any Workflow** — Compatible with OpenSpec, superpowers, feature-dev
 
 ## Installation
 
-### From Marketplace
-
 ```bash
-/plugin marketplace add mindcontext/mindcontext-core
-/plugin install mindcontext-core@mindcontext
+# Add marketplace
+/plugin marketplace add tmsjngx0/mindcontext-core
+
+# Install
+/plugin install mindcontext-core@tmsjngx0
 ```
 
-### From Local Path
+## Commands
 
-```bash
-/plugin marketplace add ./mindcontext-core
-/plugin install mindcontext-core@local
+| Command | Description |
+|---------|-------------|
+| `/sod` | Start of day — sync repo, load context, show status |
+| `/eod` | End of day — check uncommitted work, save session |
+| `/focus` | Show or set current work focus |
+| `/update-context` | Save session state before /clear |
+| `/project-init` | Initialize project with context structure |
+| `/commit` | Smart commit with Conventional Commits format |
+
+## Hooks
+
+| Hook | When | What |
+|------|------|------|
+| `SessionStart` | Session begins | Injects focus, decisions, integrations |
+| `Stop` | Between responses | Updates last_active timestamp |
+| `PreCompact` | Before compaction | Preserves critical context |
+| `SessionEnd` | Session ends | Cleans up session entry |
+
+## Skills
+
+| Skill | Triggers |
+|-------|----------|
+| `start-of-day` | "sod", "start of day", "morning sync" |
+| `end-of-day` | "eod", "end of day", "wrap up" |
+| `focus-state` | "what am I working on", "focus on X" |
+| `update-context` | "update context", "save context" |
+| `project-init` | "init project", "initialize" |
+| `smart-commit` | "commit", "smart commit" |
+
+## Project Structure
+
+After running `/project-init`:
+
+```
+your-project/
+├── .project/
+│   └── context/
+│       ├── focus.json      # Session state
+│       └── progress.md     # Progress log
+└── CLAUDE.md               # Project guidelines
 ```
 
-## How It Works
+## focus.json Schema
 
-MindContext Core reads from `.project/context/focus.json` and injects context automatically:
-
+```json
+{
+  "current_focus": {
+    "type": "task",
+    "name": "Implement login",
+    "started": "2025-12-27",
+    "status": "in_progress"
+  },
+  "key_decisions": {
+    "auth-method": "JWT tokens",
+    "api-style": "REST"
+  },
+  "session_summary": {
+    "date": "2025-12-27",
+    "work_done": ["Completed registration"]
+  },
+  "next_session_tasks": [
+    "Add login endpoint",
+    "Add rate limiting"
+  ],
+  "context_level": "minimal",
+  "active_sessions": {},
+  "config": {
+    "workflow_enforcement": "remind",
+    "integrations": {
+      "workflow": "mindcontext-skills",
+      "tdd": "superpowers",
+      "code_analysis": "feature-dev"
+    }
+  }
+}
 ```
-Session Start:
-┌────────────────────────────────────────┐
-│ # MindContext Session                  │
-│                                        │
-│ **Focus:** epic - user-auth            │
-│ **Epic:** user-auth | **Task:** 003    │
-│                                        │
-│ **Key Decisions:**                     │
-│ - auth-method: JWT tokens              │
-│ - api-style: REST with OpenAPI         │
-│                                        │
-│ **Next:** Complete login endpoint      │
-└────────────────────────────────────────┘
-```
 
-### Tiered Context Levels
+## Context Levels
 
 Set `context_level` in focus.json:
 
 | Level | Tokens | Includes |
 |-------|--------|----------|
-| `minimal` | ~250 | Focus, 2-3 decisions, next task |
+| `minimal` | ~250 | Focus, 2-3 decisions, next task, integrations |
 | `standard` | ~500 | + task criteria, last session work |
 | `full` | ~2000 | + all decisions, progress summary |
 
-## Required File Structure
+## Integration Detection
+
+Core auto-detects installed plugins on session start:
+
+| Plugin | Detection Marker |
+|--------|------------------|
+| mindcontext-skills | `.project/prds/` or `.project/epics/` |
+| openspec | `.openspec/` or `specs/` |
+| superpowers | `.superpowers/` |
+| serena | `.serena/` |
+
+Detected integrations are stored in `focus.json` and shown in session context:
 
 ```
-your-project/
-└── .project/
-    └── context/
-        ├── focus.json      # Session state (required)
-        └── progress.md     # Progress log (optional)
+# MindContext Session
+
+**Integrations:** mindcontext-skills + feature-dev
+**Focus:** task - Implement login
+...
 ```
 
-### focus.json Schema
+## Available Integrations
 
-```json
-{
-  "current_focus": {
-    "type": "epic",
-    "name": "user-auth",
-    "epic": "user-auth",
-    "task": "003",
-    "phase": "implementation"
-  },
-  "key_decisions": {
-    "auth-method": "JWT tokens for stateless auth",
-    "api-style": "REST with OpenAPI spec"
-  },
-  "next_session_tasks": [
-    "Complete login endpoint",
-    "Add rate limiting"
-  ],
-  "session_summary": {
-    "date": "2025-12-27",
-    "work_done": [
-      "Implemented user registration",
-      "Added password hashing"
-    ]
-  },
-  "context_level": "minimal"
-}
+### Workflow (pick one)
+
+**mindcontext-skills** — PRD → Epic → Task methodology
+```bash
+/plugin marketplace add tmsjngx0/mindcontext-skills
+/plugin install mindcontext-skills@tmsjngx0
 ```
 
-## Integration
+**openspec** — Spec-driven development with change requests
+```bash
+/plugin marketplace add openspec/openspec
+/plugin install openspec@openspec
+```
 
-MindContext Core is designed to work alongside:
+### TDD Enforcement
 
-- **[OpenSpec](https://github.com/Fission-AI/OpenSpec)** — Spec management, change requests
-- **[feature-dev](https://github.com/anthropics/claude-code)** — Code exploration, architecture
-- **[superpowers](https://github.com/obra/superpowers)** — TDD enforcement, micro-tasks
+**superpowers** — Micro-task TDD with Red-Green-Refactor
+```bash
+/plugin marketplace add anthropics/superpowers
+/plugin install superpowers@anthropics
+```
 
-No conflicts — Core only handles session lifecycle.
+### Code Analysis
 
-## Comparison: Core vs Full
+**feature-dev** — Codebase exploration and architecture
+```bash
+/plugin marketplace add anthropics/feature-dev
+/plugin install feature-dev@anthropics
+```
 
-| Feature | Core | Full (mindcontext-skills) |
-|---------|------|---------------------------|
-| Session hooks | ✅ | ✅ |
-| Context injection | ✅ | ✅ |
-| Memory compaction handling | ✅ | ✅ |
-| TDD enforcement | ❌ | ✅ |
+## Recommended Combinations
+
+| Mode | Plugins | Use Case |
+|------|---------|----------|
+| **Full MindContext** | core + mindcontext-skills + feature-dev | PRD → Epic → Task workflow |
+| **Integration** | core + openspec + superpowers + feature-dev | Spec-driven + TDD |
+| **Minimal** | core only | Just session persistence |
+
+## Comparison: Core vs Skills
+
+| Feature | Core | mindcontext-skills |
+|---------|------|-------------------|
+| Session hooks | ✅ | ❌ (uses core) |
+| Context injection | ✅ | ❌ (uses core) |
+| Session commands (sod, eod, etc.) | ✅ | ❌ (uses core) |
+| Integration detection | ✅ | ❌ (uses core) |
+| TDD enforcement (PreToolUse) | ❌ | ✅ |
 | Workflow enforcement | ❌ | ✅ |
 | PRD/Epic/Task skills | ❌ | ✅ |
-| 27 skills | ❌ | ✅ |
 | Works with OpenSpec | ✅ | ⚠️ conflicts |
 | Works with superpowers | ✅ | ⚠️ conflicts |
 
@@ -132,4 +193,5 @@ MIT
 ## Links
 
 - [mindcontext.io](https://mindcontext.io)
-- [Full MindContext Skills](https://github.com/tmsjngx0/mindcontext-skills)
+- [MindContext Skills](https://github.com/tmsjngx0/mindcontext-skills) — Full workflow plugin
+- [GitHub](https://github.com/tmsjngx0/mindcontext-core)
