@@ -236,6 +236,14 @@ This file provides guidance to Claude Code when working in this repository.
 **openspec:** Follow spec-driven workflow - specs before implementation.
 **core-only:** No enforced workflow, just session persistence.
 
+## Git Commits - NO AI Attribution
+
+**IMPORTANT:** Do NOT include any AI attribution in commit messages:
+- No "Generated with Claude Code" footer
+- No "Co-Authored-By: Claude" or similar
+- No AI-related comments or markers
+- Keep commit messages clean and professional
+
 ## Context Files
 
 - `.project/context/focus.json` - Current work focus and session state
