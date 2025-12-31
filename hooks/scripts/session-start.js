@@ -22,6 +22,56 @@ const {
   buildConcurrencyWarning,
   cleanupStaleSessions
 } = require('./lib/session-manager');
+const { writeFocus } = require('./lib/focus-manager');
+
+/**
+ * Build one-time onboarding prompt for missing workflow integration.
+ * Only shows once per project (tracked via focus.json onboarding.shown).
+ *
+ * @param {Object} focus - Focus.json content
+ * @param {string} cwd - Current working directory
+ * @returns {Promise<{prompt: string|null, focus: Object}>}
+ */
+async function buildOnboardingPrompt(focus, cwd) {
+  // Already shown onboarding - skip
+  if (focus.onboarding?.shown) {
+    return { prompt: null, focus };
+  }
+
+  // Workflow already detected - mark onboarding complete
+  const integrations = focus.config?.integrations || {};
+  if (integrations.workflow) {
+    focus.onboarding = { shown: true, date: new Date().toISOString().split('T')[0] };
+    await writeFocus(cwd, focus);
+    return { prompt: null, focus };
+  }
+
+  // Show onboarding prompt once
+  focus.onboarding = { shown: true, date: new Date().toISOString().split('T')[0] };
+  await writeFocus(cwd, focus);
+
+  const prompt = `
+**Welcome to MindContext!** No workflow plugin detected.
+
+Consider installing one for structured development:
+
+**mindcontext-skills** - PRD → Epic → Task methodology
+\`\`\`
+/plugin marketplace add tmsjngx0/mindcontext-skills
+/plugin install mindcontext-skills@tmsjngx0
+\`\`\`
+
+**openspec** - Spec-driven development
+\`\`\`
+/plugin marketplace add Fission-AI/openspec
+/plugin install openspec@Fission-AI
+\`\`\`
+
+Or continue with core-only (session persistence + context injection).
+`;
+
+  return { prompt, focus };
+}
 
 /**
  * Parse hook input from stdin.
@@ -76,8 +126,17 @@ async function main() {
   // Get context level (default to minimal)
   const level = focus.context_level || 'minimal';
 
+  // Check for one-time onboarding prompt
+  const onboarding = await buildOnboardingPrompt(focus, cwd);
+  focus = onboarding.focus;
+
   // Build context based on level
   let context = await buildContext(focus, projectRoot, level);
+
+  // Append onboarding prompt if first run
+  if (onboarding.prompt) {
+    context += '\n' + onboarding.prompt;
+  }
 
   // Append concurrency warning if applicable
   if (concurrencyWarning) {
