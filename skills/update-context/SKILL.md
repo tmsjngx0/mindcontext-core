@@ -44,7 +44,18 @@ Update `.project/context/focus.json`:
 }
 ```
 
-### 3. Confirm
+### 3. Documentation Reminder
+
+If significant work was done this session, check:
+
+```
+📝 Documentation check:
+  - CHANGELOG.md updated? (for features/fixes)
+  - README.md updated? (if user-facing changes)
+  - progress.md updated? (detailed session notes)
+```
+
+### 4. Confirm
 
 ```
 CONTEXT UPDATED
@@ -59,6 +70,10 @@ SESSION SUMMARY
 NEXT SESSION
   • [next task 1]
   • [next task 2]
+
+DOCUMENTATION
+  [✓/✗] CHANGELOG.md
+  [✓/✗] README.md
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Ready for /clear or session switch

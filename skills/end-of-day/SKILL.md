@@ -51,7 +51,20 @@ Update `.project/context/focus.json` (if exists):
 - Preserve `session_summary.work_done` (or ask user for summary)
 - Update `last_updated` timestamp
 
-### 4. Summary
+### 4. Documentation Reminder
+
+Check if documentation needs updating:
+
+```
+📝 Documentation check:
+  - CHANGELOG.md updated? (for features/fixes added today)
+  - README.md updated? (if user-facing changes)
+  - progress.md updated? (session notes)
+```
+
+If significant work was done (features/fixes), remind user before ending.
+
+### 5. Summary
 
 ```
 END OF DAY - [date]
@@ -61,6 +74,7 @@ CHECKLIST
   [✓/✗] All changes committed
   [✓/✗] All commits pushed
   [✓/✗] Session state saved
+  [✓/✗] Documentation updated
 
 WORK DONE TODAY
   • [item from session_summary or git log]

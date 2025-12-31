@@ -144,6 +144,26 @@ COMMIT SUMMARY
 Push? (yes/no)
 ```
 
+## Documentation Reminder
+
+**Before committing significant changes, remind user to update:**
+
+1. **CHANGELOG.md** - Add entry under [Unreleased]
+2. **README.md** - If user-facing features changed
+
+```
+📝 Documentation check:
+  - CHANGELOG.md updated? (use /changelog add <entry>)
+  - README.md updated? (if user-facing changes)
+```
+
+Only show this reminder for:
+- `feat:` commits (new features)
+- `fix:` commits (bug fixes users care about)
+- Breaking changes
+
+Skip for: `chore:`, `docs:`, `test:`, `refactor:`, `style:`
+
 ## Notes
 
 - Uses Conventional Commits 1.0.0 standard
