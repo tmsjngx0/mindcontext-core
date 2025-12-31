@@ -42,9 +42,11 @@ Create these files:
 - `.project/context/progress.md` - Progress notes
 - `CLAUDE.md` - Project guidelines
 
-### Phase 3: Ask Workflow Preference
+### Phase 3: Ask User Preferences
 
-**IMPORTANT: Use AskUserQuestion tool to ask the user:**
+**IMPORTANT: Use AskUserQuestion tool to ask TWO questions:**
+
+#### Question 1: Workflow
 
 ```
 Which development workflow would you like to use?
@@ -65,7 +67,7 @@ Which development workflow would you like to use?
    - Add workflow later if needed
 ```
 
-**Use the AskUserQuestion tool with these options:**
+**AskUserQuestion parameters:**
 - Header: "Workflow"
 - Question: "Which development workflow would you like to use?"
 - Options:
@@ -73,9 +75,78 @@ Which development workflow would you like to use?
   2. openspec - Spec-driven development
   3. None - Core only, add workflow later
 
-### Phase 4: Install Chosen Workflow
+#### Question 2: Repository Structure
 
-Based on user's choice:
+```
+What repository structure do you want?
+
+1. **Shadow Engineering** (Recommended for AI-assisted development)
+   - Parent repo: AI context, planning, orchestration
+   - Submodule: Clean production code
+   - Clean git history in production repo
+   - Professional output from AI-assisted dev
+
+2. **Single Repo**
+   - Everything in one repository
+   - Simpler setup
+   - AI context mixed with code
+```
+
+**AskUserQuestion parameters:**
+- Header: "Structure"
+- Question: "What repository structure do you want?"
+- Options:
+  1. Shadow Engineering - Parent (AI context) + Submodule (clean code) (Recommended)
+  2. Single Repo - Everything together
+
+### Phase 4: Setup Based on Choices
+
+#### 4a: Setup Repository Structure
+
+**If Shadow Engineering chosen:**
+
+Guide user through shadow setup:
+```
+SHADOW ENGINEERING SETUP
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+This repo will be the PARENT (orchestration layer).
+You need a SUBMODULE for clean production code.
+
+Options:
+1. Create new submodule (for new projects)
+2. Add existing repo as submodule (for existing code)
+
+[Ask user which option]
+```
+
+**If "Create new submodule":**
+```bash
+# Create the code submodule
+mkdir my-project
+cd my-project
+git init
+echo "# My Project" > README.md
+git add . && git commit -m "Initial commit"
+
+# User needs to create GitHub repo, then:
+git remote add origin https://github.com/USER/my-project.git
+git push -u origin main
+
+# Back to parent, add as submodule
+cd ..
+git submodule add https://github.com/USER/my-project.git my-project
+```
+
+**If "Add existing repo":**
+```bash
+git submodule add https://github.com/USER/existing-repo.git my-project
+```
+
+**If Single Repo chosen:**
+No additional setup needed - continue with workflow installation.
+
+#### 4b: Install Workflow Plugin
 
 **If mindcontext-skills:**
 ```
@@ -136,7 +207,12 @@ Store the workflow preference:
   "onboarding": {
     "shown": true,
     "workflow_chosen": "[user's choice]",
+    "structure_chosen": "[shadow_engineering | single_repo]",
     "date": "[ISO date]"
+  },
+  "repo_structure": {
+    "type": "[shadow_engineering | single_repo]",
+    "submodule": "[submodule name if shadow engineering, null otherwise]"
   }
 }
 ```
