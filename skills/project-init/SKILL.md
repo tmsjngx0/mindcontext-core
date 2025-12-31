@@ -188,15 +188,61 @@ Next steps:
 
 ### 8. Suggest Missing Integrations
 
-If no workflow detected:
+Show available plugins based on what's missing:
+
 ```
-No workflow plugin detected.
+AVAILABLE INTEGRATIONS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Options:
-  • mindcontext-skills - PRD → Epic → Task methodology
-  • openspec - Spec-driven development
+WORKFLOW (pick one):
 
-Install: /plugin install [name]@[marketplace]
+  mindcontext-skills - PRD → Epic → Task methodology
+    /plugin marketplace add tmsjngx0/mindcontext-skills
+    /plugin install mindcontext-skills@tmsjngx0
+
+  openspec - Spec-driven development with change requests
+    /plugin marketplace add openspec/openspec
+    /plugin install openspec@openspec
+
+TDD ENFORCEMENT:
+
+  superpowers - Micro-task TDD with Red-Green-Refactor
+    /plugin marketplace add anthropics/superpowers
+    /plugin install superpowers@anthropics
+
+CODE ANALYSIS:
+
+  feature-dev - Codebase exploration and architecture
+    /plugin marketplace add anthropics/feature-dev
+    /plugin install feature-dev@anthropics
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+**Recommended Combinations:**
+
+| Mode | Plugins |
+|------|---------|
+| **Full MindContext** | mindcontext-core + mindcontext-skills + feature-dev |
+| **Integration** | mindcontext-core + openspec + superpowers + feature-dev |
+| **Minimal** | mindcontext-core only (session persistence) |
+
+**Quick Setup Commands:**
+
+```bash
+# Full MindContext
+/plugin marketplace add tmsjngx0/mindcontext-skills
+/plugin install mindcontext-skills@tmsjngx0
+/plugin marketplace add anthropics/feature-dev
+/plugin install feature-dev@anthropics
+
+# Integration Mode
+/plugin marketplace add openspec/openspec
+/plugin install openspec@openspec
+/plugin marketplace add anthropics/superpowers
+/plugin install superpowers@anthropics
+/plugin marketplace add anthropics/feature-dev
+/plugin install feature-dev@anthropics
 ```
 
 ## Notes
