@@ -102,9 +102,37 @@ mkdir -p .project/context
 ```
 
 Create these files:
-- `.project/context/focus.json` - with workflow choice stored
-- `.project/context/progress.md`
-- `CLAUDE.md` - with project overview
+
+**`.project/context/focus.json`** - with workflow choice:
+```json
+{
+  "current_focus": {"type": "none", "name": null, "status": "idle"},
+  "config": {"integrations": {"workflow": "[user's choice]"}}
+}
+```
+
+**`.project/context/progress.md`**:
+```markdown
+# Progress
+Project initialized.
+```
+
+**`CLAUDE.md`** - with project overview and commands:
+```markdown
+# CLAUDE.md
+
+## Project Overview
+[Copy from design.md]
+
+## Commands
+- `/prime-context` - Load context (start session)
+- `/update-context` - Save context (end session)
+- `/focus` - Show/set current focus
+- `/commit` - Smart commit
+
+## Git Commits - NO AI Attribution
+Do NOT include AI attribution in commits.
+```
 
 ## Step 6: Show Results
 

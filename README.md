@@ -299,7 +299,7 @@ Core is designed to **never conflict** with other plugins:
 |---------|------|-------------------|
 | Session hooks | ✅ | ❌ (uses core) |
 | Context injection | ✅ | ❌ (uses core) |
-| Session commands (sod, eod, etc.) | ✅ | ❌ (uses core) |
+| Session commands (prime-context, etc.) | ✅ | ❌ (uses core) |
 | Integration detection | ✅ | ❌ (uses core) |
 | TDD enforcement (PreToolUse) | ❌ | ✅ |
 | Workflow enforcement | ❌ | ✅ |
