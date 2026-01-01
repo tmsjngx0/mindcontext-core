@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [1.1.1] - 2026-01-01
 
+### Added
+- PreToolUse hook to remind about CHANGELOG/README before git commits
+
 ### Fixed
 - Simplified project-init command for better compliance
 - Added explicit TodoWrite JSON format to ensure todos are created
