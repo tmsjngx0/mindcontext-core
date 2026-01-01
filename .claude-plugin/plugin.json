@@ -1,6 +1,6 @@
 {
   "name": "mindcontext-core",
-  "version": "1.0.5",
+  "version": "1.1.0",
   "description": "Session persistence for Claude Code. Auto-injects context at session start, preserves state across memory compaction.",
   "author": {
     "name": "tmsjngx0",
@@ -11,5 +11,6 @@
   "license": "MIT",
   "keywords": ["mindcontext", "session", "context", "persistence", "hooks"],
   "commands": "./commands",
+  "agents": "./agents",
   "skills": "./skills"
 }

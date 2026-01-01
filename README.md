@@ -105,17 +105,18 @@ MindContext Core provides the **foundation layer** that any workflow can build o
 | `PreCompact` | Before compaction | Preserves critical context |
 | `SessionEnd` | Session ends | Cleans up session entry |
 
-## Skills
+## Agents
 
-| Skill | Triggers |
-|-------|----------|
-| `prime-context` | "prime context", "load context", "sod", "start of day" |
-| `update-context` | "update context", "save context", "eod", "wrap up" |
-| `focus-state` | "what am I working on", "focus on X" |
-| `project-init` | "init project", "initialize" |
-| `smart-commit` | "commit", "smart commit" |
-| `changelog` | "update changelog", "changelog entry" |
-| `shadow-setup` | "setup shadow engineering", "separate AI context" |
+| Agent | Purpose |
+|-------|---------|
+| `project-discovery` | Handles project discovery conversation during `/project-init` |
+
+## Skills (Teaching/Reference)
+
+| Skill | Teaches |
+|-------|---------|
+| `conventional-commits` | How to write commit messages following Conventional Commits 1.0.0 |
+| `keep-a-changelog` | How to write changelog entries following Keep a Changelog format |
 
 ## Project Structure
 
@@ -281,13 +282,13 @@ You: "commit"
 
 ### What Each Plugin Provides
 
-| Plugin | Hooks | Commands | Skills | Focus |
-|--------|-------|----------|--------|-------|
-| **core** | SessionStart, Stop, PreCompact, SessionEnd | 6 | 6 | Session persistence |
-| **mindcontext-skills** | PreToolUse (TDD) | 6 | 18 | PRD/Epic/Task workflow |
-| **openspec** | — | varies | varies | Spec management |
-| **superpowers** | PreToolUse (TDD) | varies | varies | TDD enforcement |
-| **feature-dev** | — | 1 | 3 | Code exploration |
+| Plugin | Hooks | Commands | Agents | Skills | Focus |
+|--------|-------|----------|--------|--------|-------|
+| **core** | SessionStart, Stop, PreCompact, SessionEnd | 6 | 1 | 2 | Session persistence |
+| **mindcontext-skills** | PreToolUse (TDD) | 6 | 3 | 18 | PRD/Epic/Task workflow |
+| **openspec** | — | varies | — | varies | Spec management |
+| **superpowers** | PreToolUse (TDD) | varies | — | varies | TDD enforcement |
+| **feature-dev** | — | 1 | 3 | — | Code exploration |
 
 ### No Conflicts
 
