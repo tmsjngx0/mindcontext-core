@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+- Corrected openspec install instructions (npm package, not plugin)
+
 ## [1.1.1] - 2026-01-01
 
 ### Added
