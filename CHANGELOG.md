@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 - Simplified project-init command for better compliance
+- Added explicit TodoWrite JSON format to ensure todos are created
 - Added CLAUDE.md template with correct commands (/prime-context, /update-context)
 - Removed project-discovery agent (command asks directly)
 
