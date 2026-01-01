@@ -5,16 +5,21 @@ argument-hint: [project-name]
 
 # Project Init
 
-**IMMEDIATELY do these steps in order. Do NOT skip any step.**
+**FIRST ACTION: Call TodoWrite tool with this exact JSON:**
 
-## Step 1: Create Todos
+```json
+{
+  "todos": [
+    {"content": "Project Discovery - ask what user is building", "status": "pending", "activeForm": "Discovering project"},
+    {"content": "Create design.md", "status": "pending", "activeForm": "Creating design.md"},
+    {"content": "Ask workflow & structure preferences", "status": "pending", "activeForm": "Asking preferences"},
+    {"content": "Create files (focus.json, progress.md, CLAUDE.md)", "status": "pending", "activeForm": "Creating files"},
+    {"content": "Show summary and install commands", "status": "pending", "activeForm": "Showing summary"}
+  ]
+}
+```
 
-Use TodoWrite NOW to create this list:
-- Phase 1: Project Discovery
-- Phase 2: Create design.md
-- Phase 3: Workflow & Structure Preferences
-- Phase 4: Create Files
-- Phase 5: Summary
+**DO NOT proceed until you have called TodoWrite.**
 
 ## Step 2: Project Discovery
 
