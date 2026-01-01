@@ -1,10 +1,10 @@
 ---
-description: Update context - capture current session state before clearing memory or switching tasks
+description: Save session state and wrap up safely before clearing memory or switching tasks
 ---
 
 # Update Context
 
-Save current session knowledge to context files for continuity across memory clears.
+Save your session state and wrap up safely.
 
 **Usage:**
 ```
@@ -12,11 +12,10 @@ Save current session knowledge to context files for continuity across memory cle
 /update-context quick   # Fast update without prompts
 ```
 
-**Workflow:**
+**Session Lifecycle:**
 ```
-/update-context  → Save session state
-/clear           → Clear Claude's memory
-/sod             → Start fresh with prime-context
+prime-context    → Load context (start session)
+update-context   → Save context (end session)
 ```
 
-Invoke the update-context skill: "update context"
+Invoke the update-context skill: "update context", "eod", "wrap up"

@@ -54,7 +54,7 @@ MindContext Core provides the **foundation layer** that any workflow can build o
 │  │                                                      │   │
 │  │  • Session hooks (SessionStart, Stop, PreCompact)   │   │
 │  │  • Context injection (focus.json → session)         │   │
-│  │  • Session commands (sod, eod, focus, commit)       │   │
+│  │  • Session commands (prime-context, update-context)│   │
 │  │  • Integration detection                            │   │
 │  └─────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────┘
@@ -71,7 +71,7 @@ MindContext Core provides the **foundation layer** that any workflow can build o
 
 - **Session Persistence** — Auto-inject context at session start
 - **Memory Compaction** — Preserve critical context across compaction
-- **Session Commands** — sod, eod, focus, update-context, project-init, commit
+- **Session Commands** — prime-context, update-context, focus, project-init, commit, changelog
 - **Integration Detection** — Auto-detect installed plugins
 - **Works with Any Workflow** — Compatible with OpenSpec, superpowers, feature-dev
 
@@ -89,12 +89,12 @@ MindContext Core provides the **foundation layer** that any workflow can build o
 
 | Command | Description |
 |---------|-------------|
-| `/sod` | Start of day — sync repo, load context, show status |
-| `/eod` | End of day — check uncommitted work, save session |
+| `/prime-context` | Load context — sync repo, load session state |
+| `/update-context` | Save context — check uncommitted work, save session |
 | `/focus` | Show or set current work focus |
-| `/update-context` | Save session state before /clear |
 | `/project-init` | Initialize project with context structure |
 | `/commit` | Smart commit with Conventional Commits format |
+| `/changelog` | Update CHANGELOG.md with Keep a Changelog format |
 
 ## Hooks
 
@@ -109,12 +109,13 @@ MindContext Core provides the **foundation layer** that any workflow can build o
 
 | Skill | Triggers |
 |-------|----------|
-| `start-of-day` | "sod", "start of day", "morning sync" |
-| `end-of-day` | "eod", "end of day", "wrap up" |
+| `prime-context` | "prime context", "load context", "sod", "start of day" |
+| `update-context` | "update context", "save context", "eod", "wrap up" |
 | `focus-state` | "what am I working on", "focus on X" |
-| `update-context` | "update context", "save context" |
 | `project-init` | "init project", "initialize" |
 | `smart-commit` | "commit", "smart commit" |
+| `changelog` | "update changelog", "changelog entry" |
+| `shadow-setup` | "setup shadow engineering", "separate AI context" |
 
 ## Project Structure
 
@@ -239,7 +240,7 @@ Detected integrations are stored in `focus.json` and shown in session context:
 ### Full MindContext Mode
 
 ```
-You: "start of day"
+You: "prime context"
   │
   ├─→ core: Syncs git, loads focus.json, shows session state
   │
@@ -259,7 +260,7 @@ You: "commit"
 ### Integration Mode (OpenSpec + Superpowers)
 
 ```
-You: "start of day"
+You: "prime context"
   │
   └─→ core: Syncs git, loads focus.json, shows session state
 
