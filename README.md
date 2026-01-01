@@ -105,12 +105,6 @@ MindContext Core provides the **foundation layer** that any workflow can build o
 | `PreCompact` | Before compaction | Preserves critical context |
 | `SessionEnd` | Session ends | Cleans up session entry |
 
-## Agents
-
-| Agent | Purpose |
-|-------|---------|
-| `project-discovery` | Handles project discovery conversation during `/project-init` |
-
 ## Skills (Teaching/Reference)
 
 | Skill | Teaches |
@@ -282,13 +276,13 @@ You: "commit"
 
 ### What Each Plugin Provides
 
-| Plugin | Hooks | Commands | Agents | Skills | Focus |
-|--------|-------|----------|--------|--------|-------|
-| **core** | SessionStart, Stop, PreCompact, SessionEnd | 6 | 1 | 2 | Session persistence |
-| **mindcontext-skills** | PreToolUse (TDD) | 6 | 3 | 18 | PRD/Epic/Task workflow |
-| **openspec** | — | varies | — | varies | Spec management |
-| **superpowers** | PreToolUse (TDD) | varies | — | varies | TDD enforcement |
-| **feature-dev** | — | 1 | 3 | — | Code exploration |
+| Plugin | Hooks | Commands | Skills | Focus |
+|--------|-------|----------|--------|-------|
+| **core** | SessionStart, Stop, PreCompact, SessionEnd | 6 | 2 | Session persistence |
+| **mindcontext-skills** | PreToolUse (TDD) | 6 | 18 | PRD/Epic/Task workflow |
+| **openspec** | — | varies | varies | Spec management |
+| **superpowers** | PreToolUse (TDD) | varies | varies | TDD enforcement |
+| **feature-dev** | — | 1 | — | Code exploration |
 
 ### No Conflicts
 

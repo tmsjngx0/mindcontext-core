@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+- Simplified project-init command for better compliance
+- Removed project-discovery agent (command asks directly)
+
 ## [1.1.0] - 2026-01-01
 
 ### Added

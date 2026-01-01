@@ -11,6 +11,5 @@
   "license": "MIT",
   "keywords": ["mindcontext", "session", "context", "persistence", "hooks"],
   "commands": "./commands",
-  "agents": "./agents",
   "skills": "./skills"
 }
