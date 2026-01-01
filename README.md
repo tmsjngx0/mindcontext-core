@@ -177,7 +177,7 @@ Core auto-detects installed plugins on session start:
 | Plugin | Detection Marker |
 |--------|------------------|
 | mindcontext-skills | `.project/prds/` or `.project/epics/` |
-| openspec | `.openspec/` or `specs/` |
+| openspec | `openspec/` directory |
 | serena | `.serena/` |
 
 Detected integrations are stored in `focus.json` and shown in session context:
@@ -200,11 +200,12 @@ Detected integrations are stored in `focus.json` and shown in session context:
 /plugin install mindcontext-skills@tmsjngx0
 ```
 
-**openspec** — Spec-driven development with change requests
+**openspec** — Spec-driven development with change requests (npm package, not a plugin)
 ```bash
-/plugin marketplace add Fission-AI/openspec
-/plugin install openspec@Fission-AI
+npm install -g @fission-ai/openspec
+openspec init --tools claude
 ```
+This creates `.claude/commands/openspec/` with proposal, apply, archive commands.
 
 ### TDD Enforcement
 
@@ -280,7 +281,7 @@ You: "commit"
 |--------|-------|----------|--------|-------|
 | **core** | SessionStart, Stop, PreCompact, SessionEnd | 6 | 2 | Session persistence |
 | **mindcontext-skills** | PreToolUse (TDD) | 6 | 18 | PRD/Epic/Task workflow |
-| **openspec** | — | varies | varies | Spec management |
+| **openspec** | — | 3 (generated) | — | Spec management (npm pkg) |
 | **superpowers** | PreToolUse (TDD) | varies | varies | TDD enforcement |
 | **feature-dev** | — | 1 | — | Code exploration |
 

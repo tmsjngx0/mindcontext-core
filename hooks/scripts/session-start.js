@@ -61,10 +61,10 @@ Consider installing one for structured development:
 /plugin install mindcontext-skills@tmsjngx0
 \`\`\`
 
-**openspec** - Spec-driven development
-\`\`\`
-/plugin marketplace add Fission-AI/openspec
-/plugin install openspec@Fission-AI
+**openspec** - Spec-driven development (npm package, not a plugin)
+\`\`\`bash
+npm install -g @fission-ai/openspec
+openspec init --tools claude
 \`\`\`
 
 Or continue with core-only (session persistence + context injection).

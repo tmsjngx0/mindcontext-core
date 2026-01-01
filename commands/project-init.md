@@ -163,10 +163,12 @@ Then show install commands based on workflow choice:
 /plugin install mindcontext-skills@tmsjngx0
 ```
 
-**openspec:**
-```
-/plugin marketplace add Fission-AI/openspec
-/plugin install openspec@Fission-AI
+**openspec:** (npm package, not a plugin)
+```bash
+npm install -g @fission-ai/openspec
+openspec init --tools claude
 ```
 
-**NEVER use other command formats like `claude plugins:add` or `npm install`.**
+This creates `.claude/commands/openspec/` with proposal, apply, archive commands.
+
+**For plugins, use `/plugin install`. For openspec, use npm.**
