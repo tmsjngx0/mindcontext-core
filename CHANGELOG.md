@@ -7,8 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
-### Changed
+## [1.1.1] - 2026-01-01
+
+### Fixed
 - Simplified project-init command for better compliance
+- Added CLAUDE.md template with correct commands (/prime-context, /update-context)
 - Removed project-discovery agent (command asks directly)
 
 ## [1.1.0] - 2026-01-01
