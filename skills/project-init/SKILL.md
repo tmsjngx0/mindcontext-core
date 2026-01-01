@@ -1,37 +1,29 @@
 ---
 name: project-init
-description: Initialize project with context management structure. Creates .project/context/, focus.json, and CLAUDE.md. Asks user which workflow to use. Use when user says "init project", "initialize", "setup project", or "project init".
+description: Initialize project with context management. Discovers project purpose through conversation, creates design.md, then asks which workflow to use. Use when user says "init project", "initialize", "setup project", or "project init".
 ---
 
 # Project Init (Core)
 
-Initialize any project with context management and workflow selection.
+Initialize any project with context management through discovery and workflow selection.
 
-## CRITICAL: Exact Plugin Installation Commands
+## CRITICAL: Plugin Installation Commands
 
-**DO NOT make up or hallucinate installation commands. Use ONLY these exact commands:**
+**Use ONLY these exact commands. Do NOT hallucinate alternatives:**
 
-### mindcontext-skills installation:
 ```
+# mindcontext-skills
 /plugin marketplace add tmsjngx0/mindcontext-skills
 /plugin install mindcontext-skills@tmsjngx0
-```
 
-### openspec installation:
-```
+# openspec
 /plugin marketplace add Fission-AI/openspec
 /plugin install openspec@Fission-AI
 ```
 
-**These are Claude Code PLUGIN commands, NOT MCP commands. Never use `claude mcp add` for these.**
+**NEVER use:** `claude plugins:add`, `npm install`, or any other format.
 
 ---
-
-## When to Use
-
-- Starting a new project
-- Adding context management to existing project
-- User says "init", "initialize project", "setup project"
 
 ## Workflow
 
@@ -51,153 +43,158 @@ if ! git rev-parse --git-dir > /dev/null 2>&1; then
 fi
 ```
 
-### Phase 2: Create Base Structure
+### Phase 2: Project Discovery (REQUIRED)
+
+**This is the most important phase. DO NOT SKIP.**
+
+Ask the user about their project through conversation:
+
+```
+PROJECT DISCOVERY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Let's understand your project before we set things up.
+
+Tell me about your project:
+1. What are you building?
+2. What problem does it solve?
+3. Who is it for?
+```
+
+**Use AskUserQuestion or conversational prompts to discover:**
+
+1. **Project Purpose** - What is being built and why
+2. **Target Users** - Who will use this
+3. **Key Features** - Main functionality (3-5 bullets)
+4. **Tech Stack** - Languages, frameworks, databases (if known)
+5. **Constraints** - Timeline, requirements, limitations
+
+Continue the conversation until you have enough to create design.md.
+
+### Phase 3: Create design.md
+
+Based on discovery, create `.project/design.md`:
+
+```markdown
+# Project Design
+
+## Overview
+
+[1-2 paragraph summary of what the project is and why it exists]
+
+## Problem Statement
+
+[What problem does this solve? Why does it need to exist?]
+
+## Target Users
+
+[Who will use this? What are their needs?]
+
+## Key Features
+
+- [Feature 1]: [Brief description]
+- [Feature 2]: [Brief description]
+- [Feature 3]: [Brief description]
+
+## Technical Approach
+
+[High-level technical direction - languages, frameworks, architecture]
+
+## Constraints
+
+[Any limitations, requirements, or boundaries]
+
+## Success Criteria
+
+[How do we know when this is done/successful?]
+
+---
+*Generated during project initialization*
+*This document is the foundation for PRDs, specs, and implementation*
+```
+
+### Phase 4: Create Base Structure
 
 ```bash
 mkdir -p .project/context
 ```
 
-Create these files:
+Create:
+- `.project/design.md` - Project understanding (from Phase 3)
 - `.project/context/focus.json` - Session state
 - `.project/context/progress.md` - Progress notes
 - `CLAUDE.md` - Project guidelines
 
-### Phase 3: Ask User Preferences
+### Phase 5: Ask Workflow Preference
 
-**IMPORTANT: Use AskUserQuestion tool to ask TWO questions:**
-
-#### Question 1: Workflow
+**Use AskUserQuestion tool:**
 
 ```
-Which development workflow would you like to use?
-
-1. **mindcontext-skills** (Recommended)
-   - PRD → Epic → Task methodology
-   - Spec-Driven Development (SDD) with TDD enforcement
-   - Structured project management
-
-2. **openspec**
-   - Spec-driven development
-   - Change request workflow
-   - Lightweight specifications
-
-3. **None (core only)**
-   - Just session persistence
-   - No workflow enforcement
-   - Add workflow later if needed
-```
-
-**AskUserQuestion parameters:**
-- Header: "Workflow"
-- Question: "Which development workflow would you like to use?"
-- Options:
-  1. mindcontext-skills - PRD → Epic → Task with SDD/TDD (Recommended)
+Header: "Workflow"
+Question: "Which development workflow would you like to use?"
+Options:
+  1. mindcontext-skills - PRD → Epic → Task with TDD (Recommended)
   2. openspec - Spec-driven development
   3. None - Core only, add workflow later
-
-#### Question 2: Repository Structure
-
-```
-What repository structure do you want?
-
-1. **Shadow Engineering** (Recommended for AI-assisted development)
-   - Parent repo: AI context, planning, orchestration
-   - Submodule: Clean production code
-   - Clean git history in production repo
-   - Professional output from AI-assisted dev
-
-2. **Single Repo**
-   - Everything in one repository
-   - Simpler setup
-   - AI context mixed with code
 ```
 
-**AskUserQuestion parameters:**
-- Header: "Structure"
-- Question: "What repository structure do you want?"
-- Options:
+### Phase 6: Ask Repository Structure
+
+**Use AskUserQuestion tool:**
+
+```
+Header: "Structure"
+Question: "What repository structure do you want?"
+Options:
   1. Shadow Engineering - Parent (AI context) + Submodule (clean code) (Recommended)
   2. Single Repo - Everything together
-
-### Phase 4: Setup Based on Choices
-
-#### 4a: Setup Repository Structure
-
-**If Shadow Engineering chosen:**
-
-Guide user through shadow setup:
 ```
-SHADOW ENGINEERING SETUP
+
+### Phase 7: Setup Based on Choices
+
+**If Shadow Engineering:** Guide through submodule setup.
+
+**Show workflow installation:**
+
+For **mindcontext-skills**, output EXACTLY:
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+INSTALL MINDCONTEXT-SKILLS
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-This repo will be the PARENT (orchestration layer).
-You need a SUBMODULE for clean production code.
-
-Options:
-1. Create new submodule (for new projects)
-2. Add existing repo as submodule (for existing code)
-
-[Ask user which option]
-```
-
-**If "Create new submodule":**
-```bash
-# Create the code submodule
-mkdir my-project
-cd my-project
-git init
-echo "# My Project" > README.md
-git add . && git commit -m "Initial commit"
-
-# User needs to create GitHub repo, then:
-git remote add origin https://github.com/USER/my-project.git
-git push -u origin main
-
-# Back to parent, add as submodule
-cd ..
-git submodule add https://github.com/USER/my-project.git my-project
-```
-
-**If "Add existing repo":**
-```bash
-git submodule add https://github.com/USER/existing-repo.git my-project
-```
-
-**If Single Repo chosen:**
-No additional setup needed - continue with workflow installation.
-
-#### 4b: Install Workflow Plugin
-
-**If mindcontext-skills:**
-```
-To install mindcontext-skills, run:
+Run these commands:
 
 /plugin marketplace add tmsjngx0/mindcontext-skills
 /plugin install mindcontext-skills@tmsjngx0
 
-After installing, run /prd to create your first PRD.
+Then run /prd to create your PRD from design.md
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-**If openspec:**
+For **openspec**, output EXACTLY:
 ```
-To install openspec, run:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+INSTALL OPENSPEC
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Run these commands:
 
 /plugin marketplace add Fission-AI/openspec
 /plugin install openspec@Fission-AI
 
-After installing, follow openspec's initialization.
+Then follow openspec initialization to create specs from design.md
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-**If None:**
+For **None**:
 ```
-Core-only mode. You can add a workflow plugin anytime:
-- /plugin install mindcontext-skills@tmsjngx0
-- /plugin install openspec@Fission-AI
+Core-only mode. Your design.md is ready.
+Add a workflow plugin anytime with:
+  /plugin marketplace add tmsjngx0/mindcontext-skills
+  /plugin marketplace add Fission-AI/openspec
 ```
 
-### Phase 5: Update focus.json
-
-Store the workflow preference:
+### Phase 8: Create focus.json
 
 ```json
 {
@@ -232,12 +229,12 @@ Store the workflow preference:
   },
   "repo_structure": {
     "type": "[shadow_engineering | single_repo]",
-    "submodule": "[submodule name if shadow engineering, null otherwise]"
+    "submodule": "[submodule name if shadow, null otherwise]"
   }
 }
 ```
 
-### Phase 6: Create CLAUDE.md
+### Phase 9: Create CLAUDE.md
 
 ```markdown
 # CLAUDE.md
@@ -246,87 +243,61 @@ This file provides guidance to Claude Code when working in this repository.
 
 ## Project Overview
 
-[Brief description - ask user or infer from package.json/README]
+[Copy the Overview section from design.md]
 
 ## Development Workflow
 
 [Based on user's workflow choice:]
 
-**mindcontext-skills:** Follow SDD workflow - PRD first, then Epic, then Tasks with TDD.
-**openspec:** Follow spec-driven workflow - specs before implementation.
+**mindcontext-skills:** Follow SDD workflow - design.md → PRD → Epic → Tasks with TDD.
+**openspec:** Follow spec-driven workflow - design.md → specs → implementation.
 **core-only:** No enforced workflow, just session persistence.
 
 ## Git Commits - NO AI Attribution
 
-**IMPORTANT:** Do NOT include any AI attribution in commit messages:
+Do NOT include any AI attribution in commit messages:
 - No "Generated with Claude Code" footer
 - No "Co-Authored-By: Claude" or similar
-- No AI-related comments or markers
 - Keep commit messages clean and professional
 
 ## Context Files
 
-- `.project/context/focus.json` - Current work focus and session state
-- `.project/context/progress.md` - Session progress notes
+- `.project/design.md` - Project design and understanding
+- `.project/context/focus.json` - Current work focus
+- `.project/context/progress.md` - Session progress
 
 ## Commands
 
 - `/sod` - Start of day (sync and load context)
 - `/eod` - End of day (check uncommitted work)
 - `/focus` - Show/set current focus
-- `/update-context` - Save session state
 - `/commit` - Smart commit with conventional format
 ```
 
-### Phase 7: Output
+### Phase 10: Final Output
 
 ```
 PROJECT INITIALIZED
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Created:
+  ✓ .project/design.md        (project understanding)
   ✓ .project/context/focus.json
   ✓ .project/context/progress.md
   ✓ CLAUDE.md
 
 Workflow: [user's choice]
+Structure: [shadow_engineering | single_repo]
 
-[If workflow plugin needs installing, show install commands]
+[Show workflow-specific install commands]
 
-Next steps:
-  [Based on workflow choice]
+Next: Install your workflow plugin, then it will use design.md
+      to create PRDs (mindcontext-skills) or specs (openspec).
 ```
 
-## Workflow-Specific Next Steps
+## Key Points
 
-**mindcontext-skills:**
-```
-Next steps:
-  1. Install: /plugin install mindcontext-skills@tmsjngx0
-  2. Create PRD: /prd
-  3. Start development with SDD workflow
-```
-
-**openspec:**
-```
-Next steps:
-  1. Install: /plugin install openspec@Fission-AI
-  2. Follow openspec initialization
-  3. Create your first spec
-```
-
-**core-only:**
-```
-Next steps:
-  • Set focus: /focus on [task name]
-  • Start working: /sod
-  • Add workflow plugin later if needed
-```
-
-## Notes
-
-- Always ask user for workflow preference
-- Don't assume or skip the workflow question
-- Store choice in focus.json for future sessions
-- Guide user to install chosen plugin
-- Core only creates base structure, workflow plugin extends it
+1. **Always do project discovery first** - Don't skip to structure creation
+2. **design.md is the foundation** - Workflow plugins build on this
+3. **Core creates understanding** - Workflow plugins create methodology artifacts
+4. **Use exact install commands** - Never hallucinate alternatives
