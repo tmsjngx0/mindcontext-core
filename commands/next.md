@@ -83,38 +83,13 @@ Read `openspec/changes/[change-name]/tasks.md` and find incomplete tasks:
 Pattern to match: `- [ ]` (incomplete task)
 Pattern to skip: `- [x]` (complete task)
 
-**Example parsing:**
-```
-### 1.1 Update /project-init Command
-- [ ] 1.1.1 Add openspec CLI detection     <- INCOMPLETE (return this)
-- [x] 1.1.2 Already done                    <- SKIP
-- [ ] 1.1.3 Next task                       <- INCOMPLETE
-```
-
 Find the **first** incomplete task.
 
-## Step 5: Display Next Task
-
-Show the first incomplete task:
-
-```
-NEXT TASK
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Change: [change-name]
-Task:   [task description]
-File:   openspec/changes/[change-name]/tasks.md
-
-Progress: [X]/[Y] tasks complete
-
-To mark complete, edit tasks.md and change [ ] to [x]
-```
-
-## Step 6: Update Focus
+## Step 5: Update Focus
 
 Update `.project/context/focus.json` to track the current change:
 
-Read existing focus.json, then update:
+Read existing focus.json, then update `current_focus`:
 
 ```json
 {
@@ -131,23 +106,22 @@ Read existing focus.json, then update:
 
 **Important:** Preserve all other fields in focus.json, only update `current_focus`.
 
-## Step 7: Suggest Action
+## Step 6: Display Next Task
 
-Based on the task type, suggest next action:
+Show the first incomplete task:
 
-**If task mentions "test":**
 ```
-Suggestion: Start with TDD - write failing test first
-```
+NEXT TASK
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-**If task mentions "create" or "add":**
-```
-Suggestion: Use feature-dev for guided implementation
-```
+Change: [change-name]
+Task:   [task description]
+File:   openspec/changes/[change-name]/tasks.md
 
-**If task mentions "update" or "modify":**
-```
-Suggestion: Read the existing code first, then make changes
+Progress: [X]/[Y] tasks complete
+
+To implement: /openspec:apply [change-name]
+To mark complete: edit tasks.md, change [ ] to [x]
 ```
 
 ## All Tasks Complete
@@ -161,7 +135,6 @@ ALL TASKS COMPLETE
 All tasks in [change-name] are done!
 
 Next steps:
-1. Review the implementation
-2. Run: openspec validate [change-name] --strict
-3. Archive: /openspec:archive [change-name]
+1. Run: openspec validate [change-name] --strict
+2. Archive: /openspec:archive [change-name]
 ```
