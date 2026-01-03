@@ -7,9 +7,23 @@ argument-hint: [change-name]
 
 Find the next incomplete task from OpenSpec changes.
 
-## Step 1: Check for OpenSpec
+## Step 1: Check Focus
 
-First, check if openspec directory exists:
+First, check `.project/context/focus.json` for an active change:
+
+```bash
+cat .project/context/focus.json 2>/dev/null
+```
+
+Look for `current_focus.openspec_change` or `current_focus.name` where `type` is "change".
+
+**If focus.json has an active change:** Use that change directly (skip to Step 3).
+
+**If no focus or focus.json missing:** Continue to Step 2.
+
+## Step 2: Check for OpenSpec
+
+Check if openspec directory exists:
 
 ```bash
 ls openspec/changes/ 2>/dev/null
@@ -25,9 +39,7 @@ To use /next, either:
 ```
 Exit here.
 
-## Step 2: Find Active Changes
-
-List directories in `openspec/changes/` (exclude `archive/`):
+**Find active changes** (exclude `archive/`):
 
 ```bash
 ls -d openspec/changes/*/ 2>/dev/null | grep -v archive
@@ -41,29 +53,15 @@ Create a new change with: /openspec:proposal
 ```
 Exit here.
 
-## Step 3: Parse Tasks
+## Step 3: Select Change
 
-For each change directory found, read `tasks.md` and find incomplete tasks:
+**Priority order:**
+1. If argument provided (`$ARGUMENTS`): Use that change name
+2. If focus.json has `current_focus.openspec_change`: Use that
+3. If single change found: Use it directly
+4. If multiple changes: Ask user
 
-Pattern to match: `- [ ]` (incomplete task)
-Pattern to skip: `- [x]` (complete task)
-
-**Example parsing:**
-```
-## 1. OpenSpec Integration
-
-### 1.1 Update /project-init Command
-- [ ] 1.1.1 Add openspec CLI detection     <- INCOMPLETE (return this)
-- [x] 1.1.2 Already done                    <- SKIP
-- [ ] 1.1.3 Next task                       <- INCOMPLETE
-```
-
-## Step 4: Handle Multiple Changes
-
-**If argument provided:** Use that change name directly.
-
-**If multiple changes with tasks:** Use AskUserQuestion:
-
+**Multiple changes prompt:**
 ```json
 {
   "questions": [{
@@ -78,11 +76,26 @@ Pattern to skip: `- [x]` (complete task)
 }
 ```
 
-**If single change:** Use it directly.
+## Step 4: Parse Tasks
+
+Read `openspec/changes/[change-name]/tasks.md` and find incomplete tasks:
+
+Pattern to match: `- [ ]` (incomplete task)
+Pattern to skip: `- [x]` (complete task)
+
+**Example parsing:**
+```
+### 1.1 Update /project-init Command
+- [ ] 1.1.1 Add openspec CLI detection     <- INCOMPLETE (return this)
+- [x] 1.1.2 Already done                    <- SKIP
+- [ ] 1.1.3 Next task                       <- INCOMPLETE
+```
+
+Find the **first** incomplete task.
 
 ## Step 5: Display Next Task
 
-Show the first incomplete task from the selected change:
+Show the first incomplete task:
 
 ```
 NEXT TASK
@@ -99,18 +112,24 @@ To mark complete, edit tasks.md and change [ ] to [x]
 
 ## Step 6: Update Focus
 
-Update `.project/context/focus.json`:
+Update `.project/context/focus.json` to track the current change:
+
+Read existing focus.json, then update:
 
 ```json
 {
   "current_focus": {
     "type": "change",
     "name": "[change-name]",
+    "openspec_change": "[change-name]",
     "task": "[task-id]",
-    "phase": "implementation"
+    "phase": "implementation",
+    "status": "in_progress"
   }
 }
 ```
+
+**Important:** Preserve all other fields in focus.json, only update `current_focus`.
 
 ## Step 7: Suggest Action
 
@@ -133,7 +152,7 @@ Suggestion: Read the existing code first, then make changes
 
 ## All Tasks Complete
 
-If all tasks in all changes are complete:
+If all tasks in the change are complete:
 
 ```
 ALL TASKS COMPLETE
