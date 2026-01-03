@@ -15,7 +15,7 @@
  */
 
 const { readFocus, findProjectRoot } = require('./lib/focus-manager');
-const { buildContext } = require('./lib/context-builder');
+const { buildContext, buildOpenSpecContext } = require('./lib/context-builder');
 const {
   registerSession,
   getActiveSessions,
@@ -132,6 +132,12 @@ async function main() {
 
   // Build context based on level
   let context = await buildContext(focus, projectRoot, level);
+
+  // Append OpenSpec context if available
+  const openspecContext = await buildOpenSpecContext(projectRoot);
+  if (openspecContext) {
+    context += '\n' + openspecContext;
+  }
 
   // Append onboarding prompt if first run
   if (onboarding.prompt) {

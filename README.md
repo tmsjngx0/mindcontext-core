@@ -92,7 +92,8 @@ MindContext Core provides the **foundation layer** that any workflow can build o
 | `/prime-context` | Load context — sync repo, load session state |
 | `/update-context` | Save context — check uncommitted work, save session |
 | `/focus` | Show or set current work focus |
-| `/project-init` | Initialize project with context structure |
+| `/project-init` | Initialize project with context structure and workflow |
+| `/next` | Find next task from OpenSpec changes |
 | `/commit` | Smart commit with Conventional Commits format |
 | `/changelog` | Update CHANGELOG.md with Keep a Changelog format |
 
@@ -130,10 +131,11 @@ your-project/
 ```json
 {
   "current_focus": {
-    "type": "task",
-    "name": "Implement login",
+    "type": "change",
+    "name": "add-auth",
     "started": "2025-12-27",
-    "status": "in_progress"
+    "status": "in_progress",
+    "openspec_change": "add-auth"
   },
   "key_decisions": {
     "auth-method": "JWT tokens",
@@ -152,8 +154,9 @@ your-project/
   "config": {
     "workflow_enforcement": "remind",
     "integrations": {
-      "workflow": "mindcontext-skills",
-      "tdd": "superpowers",
+      "workflow": "openspec",
+      "openspec": "cli",
+      "claudeMem": "available",
       "code_analysis": "feature-dev"
     }
   }

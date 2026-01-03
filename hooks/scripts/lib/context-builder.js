@@ -8,10 +8,15 @@
  *   - minimal (~250 tokens): Focus summary, 2-3 key decisions, next task, hint
  *   - standard (~500 tokens): + active task details, last session work
  *   - full (~2000 tokens): + all key decisions, progress summary
+ *
+ * Integrations:
+ *   - OpenSpec: Detects openspec/ directory and active changes
+ *   - Claude-Mem: Detects MCP availability (placeholder for future)
  */
 
 const fs = require('fs').promises;
 const path = require('path');
+const { execSync } = require('child_process');
 
 /**
  * Select top key decisions, prioritizing epic-related ones.
@@ -395,6 +400,82 @@ async function buildContext(focus, projectRoot, level = 'minimal') {
   }
 }
 
+/**
+ * Detect OpenSpec integration status.
+ *
+ * @param {string} projectRoot - Project root path
+ * @returns {Promise<{installed: boolean, activeChanges: number, currentChange: string|null}>}
+ */
+async function detectOpenSpec(projectRoot) {
+  const openspecDir = path.join(projectRoot, 'openspec');
+  const changesDir = path.join(openspecDir, 'changes');
+
+  try {
+    await fs.access(openspecDir);
+  } catch {
+    return { installed: false, activeChanges: 0, currentChange: null };
+  }
+
+  // Count active changes (exclude archive/)
+  let activeChanges = 0;
+  let currentChange = null;
+
+  try {
+    const entries = await fs.readdir(changesDir, { withFileTypes: true });
+    for (const entry of entries) {
+      if (entry.isDirectory() && entry.name !== 'archive') {
+        activeChanges++;
+        if (!currentChange) currentChange = entry.name;
+      }
+    }
+  } catch {
+    // No changes directory
+  }
+
+  return { installed: true, activeChanges, currentChange };
+}
+
+/**
+ * Detect Claude-Mem MCP availability.
+ * Checks if the claude-mem MCP tools are available.
+ *
+ * @returns {Promise<boolean>}
+ */
+async function detectClaudeMem() {
+  // For now, we can't directly detect MCP availability from hooks
+  // This is a placeholder that always returns false
+  // In the future, we could check for specific environment variables
+  // or configuration files that indicate claude-mem is configured
+  return false;
+}
+
+/**
+ * Build OpenSpec context section.
+ *
+ * @param {string} projectRoot - Project root path
+ * @returns {Promise<string|null>} - OpenSpec context or null
+ */
+async function buildOpenSpecContext(projectRoot) {
+  const openspec = await detectOpenSpec(projectRoot);
+
+  if (!openspec.installed) {
+    return null;
+  }
+
+  const lines = [];
+
+  if (openspec.activeChanges > 0) {
+    lines.push(`**OpenSpec:** ${openspec.activeChanges} active change(s)`);
+    if (openspec.currentChange) {
+      lines.push(`**Current Change:** ${openspec.currentChange}`);
+    }
+  } else {
+    lines.push('**OpenSpec:** Initialized (no active changes)');
+  }
+
+  return lines.join('\n');
+}
+
 module.exports = {
   buildMinimal,
   buildStandard,
@@ -403,5 +484,8 @@ module.exports = {
   selectKeyDecisions,
   extractAcceptanceCriteria,
   readActiveTask,
-  readProgress
+  readProgress,
+  detectOpenSpec,
+  detectClaudeMem,
+  buildOpenSpecContext
 };

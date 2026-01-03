@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-01-02
+
+### Added
+- `/next` command to find and display next task from OpenSpec changes
+- OpenSpec integration in `/project-init`:
+  - Detects OpenSpec CLI (`command -v openspec`)
+  - Runs `openspec init --tools claude` when available
+  - Fills `openspec/project.md` with project discovery
+- OpenSpec context injection in SessionStart hook:
+  - Detects `openspec/` directory
+  - Shows count of active changes
+  - Shows current change name
+- Claude-Mem integration placeholder (future MCP detection)
+- New focus.json fields:
+  - `config.integrations.openspec` (cli | none)
+  - `config.integrations.claudeMem` (available | none)
+  - `current_focus.openspec_change` for tracking active change
+
+### Changed
+- `/project-init` now recommends OpenSpec as primary workflow
+- Updated focus.json schema documentation in README
+
 ### Fixed
 - Corrected openspec install instructions (npm package, not plugin)
 
